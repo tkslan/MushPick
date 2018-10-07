@@ -7,8 +7,8 @@ public enum IngredientUnit { Reference, Constant }
 [Serializable]
 public class ValueReference
 {
-    public float amount = 1;
+    public float Amount = 1;
     public Value Value;
     public bool UseConstant = false;
-    public float FloatVariable { get { return UseConstant ? amount : Value.FloatVariable; } }
+    public float FloatVariable { get { return UseConstant ? Amount : Value.FloatVariable; } }
 }
