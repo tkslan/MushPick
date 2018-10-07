@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-public enum IngredientUnit { Reference, Constant }
+public enum ReferenceType { Reference, Constant }
 
 // Custom serializable class
 [Serializable]
@@ -9,6 +9,5 @@ public class ValueReference
 {
     public float Amount = 1;
     public Value Value;
-    public bool UseConstant = false;
-    public float FloatVariable { get { return UseConstant ? Amount : Value.FloatVariable; } }
-}
+    public ReferenceType ReferenceType;
+    public float FloatVariable { get { return ReferenceType == ReferenceType.Constant ? Amount : Value.FloatVariable; } }}
