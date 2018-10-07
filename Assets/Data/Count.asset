@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0bb817840566542bbfef28e82a2658, type: 3}
   m_Name: Count
   m_EditorClassIdentifier: 
-  FloatVariable: 10000
+  FloatVariable: 100000
