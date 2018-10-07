@@ -8,8 +8,8 @@ public class WorldController : MonoBehaviour
     public static WorldGrid Grid = new WorldGrid() { X = 8, Y = 8 };
     public Moveable Spawn;
     public Transform SystemSpawn;
-    private Moveable[] moveables;
     public ValueReference SpawnsCount;
+    public ValueReference SystemSpeed;
     float avg = 0f;
     float ms = 0f;
     int count = 0;
@@ -26,8 +26,6 @@ public class WorldController : MonoBehaviour
     void Start()
     {
         var spawnsCount = (int)SpawnsCount.FloatVariable;
-
-        moveables = new Moveable[spawnsCount + 1];
         entities = new MoveableEntity[spawnsCount + 1];
         for (int i = 0; i < spawnsCount; i++)
         {
@@ -47,7 +45,6 @@ public class WorldController : MonoBehaviour
             {
                 var spawn = Instantiate(Spawn, transform);
                 spawn.SetColor(RandomColor());
-                moveables[i] = spawn;
                 spawn.SetNewRandomTarget();
             }
         }
@@ -84,7 +81,7 @@ public class WorldController : MonoBehaviour
         var dir = entity.TargetPosition - (Vector2)entity.Transform.position;
         if (dir.magnitude < 0.1f) 
             entity.TargetPosition = GetRandomWorldPosition();
-        var velocity = dir.normalized.magnitude * 0.05f;
+        var velocity = dir.normalized.magnitude * SystemSpeed.FloatVariable;
         entity.Transform.Translate(dir * velocity);
     }
 
