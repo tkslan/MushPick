@@ -93,8 +93,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpeedValue:
-    amount: 0.19
+    Amount: 1
     Value: {fileID: 11400000, guid: 37e45fd2f1239f342ace215a1e094cd9, type: 2}
-    UseConstant: 0
+    ReferenceType: 0
   TargetPosition: {x: 0, y: 0}
   DontUpdate: 0
