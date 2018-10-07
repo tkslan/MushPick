@@ -8,15 +8,17 @@ public class WorldController : MonoBehaviour
     public static WorldGrid Grid = new WorldGrid() { X = 8, Y = 8 };
     public List<Moveable> Spawns;
     private Moveable[] moveables;
-    public int SpawnsCount = 5;
+    public ValueReference SpawnsCount;
     float avg = 0f;
     float ms = 0f;
     int count = 0;
     // Start is called before the first frame update
     void Start()
     {
-        moveables = new Moveable[SpawnsCount + 1];
-        for (int i = 0; i < SpawnsCount; i++)
+        var spawnsCount = (int)SpawnsCount.FloatVariable;
+
+        moveables = new Moveable[spawnsCount + 1];
+        for (int i = 0; i < spawnsCount; i++)
         {
             var spawn = Instantiate(Spawns[0], transform);
             spawn.SetColor(new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)));
