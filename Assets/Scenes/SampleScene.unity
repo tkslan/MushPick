@@ -226,7 +226,10 @@ MonoBehaviour:
   UseSystem: 0
   Spawns:
   - {fileID: 6086177604158619179, guid: 7e47b5994175c7a43956afef9db2dd88, type: 3}
-  SpawnsCount: 10000
+  SpawnsCount:
+    Amount: 1
+    Value: {fileID: 11400000, guid: 503afb4ab6de6490d887df38c1f2c81e, type: 2}
+    ReferenceType: 0
 --- !u!4 &1894328603
 Transform:
   m_ObjectHideFlags: 0
