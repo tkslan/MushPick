@@ -3,9 +3,9 @@
 public class Moveable : MonoBehaviour
 {
     [SerializeField] ValueReference SpeedValue;
-    public Vector2 TargetPosition = Vector2.zero;
 
     private SpriteRenderer sprite;
+    private Vector2 TargetPosition = Vector2.zero;
 
     public Vector2 GetRandomWorldPosition()
     {
@@ -30,7 +30,6 @@ public class Moveable : MonoBehaviour
         SetNewTarget(GetRandomWorldPosition());
     }
 
-
     public void Stop()
     {
         TargetPosition = Vector2.zero;
@@ -47,8 +46,6 @@ public class Moveable : MonoBehaviour
 
     private void Update()
     {
-       // if (TargetPosition == Vector2.zero || DontUpdate) return;
-
-        MoveTick();
+        if (TargetPosition!= Vector2.zero) MoveTick();
     }
 }
