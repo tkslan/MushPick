@@ -5,31 +5,31 @@ public class Moveable : MonoBehaviour
     [SerializeField] ValueReference SpeedValue;
     public Vector2 TargetPosition = Vector2.zero;
 
-    public bool DontUpdate = false;
+    private SpriteRenderer sprite;
 
     public Vector2 GetRandomWorldPosition()
     {
         var newDir = new Vector2(Random.Range(-WorldController.Grid.X, WorldController.Grid.X),
             Random.Range(-WorldController.Grid.Y, WorldController.Grid.Y));
-        if (newDir != Vector2.zero)
-            return newDir;
-        else
-            return GetRandomWorldPosition();
-    }
-    public void SetColor(Color color)
-    {
-        GetComponent<SpriteRenderer>().color = color;
+        return newDir != Vector2.zero ? newDir : GetRandomWorldPosition();
     }
 
-    public void SetNewRandomTarget()
+    public void SetColor(Color color)
     {
-        TargetPosition = GetRandomWorldPosition();
+        sprite = GetComponent<SpriteRenderer>();
+        sprite.color = color;
     }
 
     public void SetNewTarget(Vector2 position)
     {
         TargetPosition = position;
     }
+
+    public void SetNewRandomTarget()
+    {
+        SetNewTarget(GetRandomWorldPosition());
+    }
+
 
     public void Stop()
     {
@@ -39,7 +39,8 @@ public class Moveable : MonoBehaviour
     public void MoveTick()
     {
         var dir = TargetPosition - (Vector2)transform.position;
-        transform.Translate(dir * (SpeedValue.FloatVariable / dir.normalized.sqrMagnitude));
+        var velocity = dir.normalized.magnitude * SpeedValue.FloatVariable;
+        transform.Translate(dir * velocity);
 
         if (dir.magnitude < 0.1f) SetNewRandomTarget();
     }
