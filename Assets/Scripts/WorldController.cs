@@ -1,5 +1,9 @@
 ﻿
 using UnityEngine;
+using Unity.Jobs;
+using Unity.Collections;
+using Unity.Transforms;
+using UnityEngine.Jobs;
 
 public class WorldController : MonoBehaviour
 {
@@ -15,7 +19,10 @@ public class WorldController : MonoBehaviour
     MoveableEntity[] entities;
     Transform[] transforms;
     bool systemReady = false;
-
+    JobHandle handle;
+    TransformAccessArray accessArray;
+    NativeArray<MoveableEntity>  _entities;
+    UpdateMove updateMove;
     void Start()
     {
         var spawnsCount = (int)SpawnsCount.FloatVariable;
@@ -27,10 +34,19 @@ public class WorldController : MonoBehaviour
             transforms[i].GetComponent<SpriteRenderer>().color = RandomColor();
             entities[i].TargetPosition = GetRandomWorldPosition();
             entities[i].CurrentPosition = transforms[i].position;
+            entities[i].ID = i;
         }
+        accessArray = new TransformAccessArray(transforms);
+        _entities = new NativeArray<MoveableEntity>(entities, Allocator.Persistent);
+        Debug.Log(accessArray.length + "-" + _entities.Length);
         systemReady = true;
-    }
 
+    }
+    private void OnDestroy()
+    {
+        accessArray.Dispose();
+        _entities.Dispose();
+    }
     Color RandomColor()
     {
         return new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
@@ -44,12 +60,20 @@ public class WorldController : MonoBehaviour
 
     void Update()
     {
+       
         if (!systemReady) return;
+        handle.Complete();
+        updateMove = new UpdateMove()
+        {
+            Entities = _entities
+        };
+     
+        handle = updateMove.Schedule(accessArray);
         count++;
         avg += Time.deltaTime;
         if (count == 30) { ms = avg /= 30; count = 0; avg = 0; }
 
-        for (int i = 0; i < entities.Length - 1; i++) MoveEntity(i);
+        //for (int i = 0; i < entities.Length - 1; i++) MoveEntity(i);
     }
 
     void MoveEntity(int index)
@@ -65,4 +89,24 @@ public class WorldController : MonoBehaviour
     {
         GUI.Label(new Rect(10, 10, 100, 20), ms.ToString("F3") + "ms");
     }
+
+    struct UpdateMove : IJobParallelForTransform
+    {
+        public NativeArray<MoveableEntity> Entities;
+
+        void IJobParallelForTransform.Execute(int index, TransformAccess transform)
+        {
+            var entity = Entities[index];
+            Vector3 dir = (Vector3)entity.TargetPosition - transform.position;
+            transform.position += dir * 0.1f;
+        }
+
+        Vector2 GetRandomWorldPosition()
+        {
+            var size = 8;
+            var newDir = new Vector2(Random.Range(-size, size), Random.Range(-size, size));
+            return newDir != Vector2.zero ? newDir : GetRandomWorldPosition();
+        }
+    }
+
 }
