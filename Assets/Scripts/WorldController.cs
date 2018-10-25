@@ -1,36 +1,34 @@
-﻿using System.Collections.Generic;
+﻿
 using UnityEngine;
-using UnityEngine.Jobs;
-using Unity.Jobs;
 
-public partial class WorldController : MonoBehaviour
+public class WorldController : MonoBehaviour
 {
-    public static WorldGrid Grid = new WorldGrid() { X = 8, Y = 8 };
     public Moveable Spawn;
     public Transform SystemSpawn;
     public ValueReference SpawnsCount;
     public ValueReference SystemSpeed;
+
+    WorldGrid grid = new WorldGrid() { X = 8, Y = 8 };
     float avg = 0f;
     float ms = 0f;
     int count = 0;
     MoveableEntity[] entities;
     Transform[] transforms;
-    bool SystemReady = false;
-    // Start is called before the first frame update
+    bool systemReady = false;
+
     void Start()
     {
         var spawnsCount = (int)SpawnsCount.FloatVariable;
         entities = new MoveableEntity[spawnsCount + 1];
-        transforms=new Transform[spawnsCount + 1];
+        transforms = new Transform[spawnsCount + 1];
         for (int i = 0; i < spawnsCount; i++)
         {
-            Transform spawn = Instantiate(SystemSpawn, transform);
-            transforms[i] = spawn;
+            transforms[i] = Instantiate(SystemSpawn, transform);
+            transforms[i].GetComponent<SpriteRenderer>().color = RandomColor();
             entities[i].TargetPosition = GetRandomWorldPosition();
             entities[i].CurrentPosition = transforms[i].position;
-            spawn.gameObject.GetComponent<SpriteRenderer>().color = RandomColor();
         }
-        SystemReady = true;
+        systemReady = true;
     }
 
     Color RandomColor()
@@ -38,40 +36,33 @@ public partial class WorldController : MonoBehaviour
         return new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
     }
 
-    static Vector2 GetRandomWorldPosition()
+    Vector2 GetRandomWorldPosition()
     {
-        var newDir = new Vector2(Random.Range(-Grid.X, Grid.X),
-            Random.Range(-Grid.Y, Grid.Y));
+        var newDir = new Vector2(Random.Range(-grid.X, grid.X), Random.Range(-grid.Y, grid.Y));
         return newDir != Vector2.zero ? newDir : GetRandomWorldPosition();
     }
 
-    private void Update()
+    void Update()
     {
-        if (!SystemReady) return;
+        if (!systemReady) return;
         count++;
         avg += Time.deltaTime;
         if (count == 30) { ms = avg /= 30; count = 0; avg = 0; }
-        SystemTick();
+
+        for (int i = 0; i < entities.Length - 1; i++) MoveEntity(i);
     }
 
-    void SystemTick()
+    void MoveEntity(int index)
     {
-        for (int i = 0; i < entities.Length - 1; i++)
-            MoveEntity(i);
-    }
-
-    void MoveEntity(int i)
-    {
-        Vector2 dir = entities[i].TargetPosition - entities[i].CurrentPosition;
-        entities[i].CurrentPosition += dir * SystemSpeed.FloatVariable;
-        transforms[i].position = entities[i].CurrentPosition;
+        Vector2 dir = entities[index].TargetPosition - entities[index].CurrentPosition;
+        entities[index].CurrentPosition += dir * SystemSpeed.FloatVariable;
+        transforms[index].position = entities[index].CurrentPosition;
         if (dir.magnitude < 0.1f)
-            entities[i].TargetPosition = GetRandomWorldPosition();
+            entities[index].TargetPosition = GetRandomWorldPosition();
     }
 
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), ms.ToString("F3") + "ms");
     }
-
 }

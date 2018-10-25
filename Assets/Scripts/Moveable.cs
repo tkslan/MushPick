@@ -9,8 +9,8 @@ public class Moveable : MonoBehaviour
 
     public Vector2 GetRandomWorldPosition()
     {
-        var newDir = new Vector2(Random.Range(-WorldController.Grid.X, WorldController.Grid.X),
-            Random.Range(-WorldController.Grid.Y, WorldController.Grid.Y));
+        var newDir = new Vector2(Random.Range(-8,8),
+            Random.Range(-8, 8));
         return newDir != Vector2.zero ? newDir : GetRandomWorldPosition();
     }
 
