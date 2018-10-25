@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1cc82e93483db0438aa687059e28355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseSystem: 0
+  UseSystem: 1
   Spawn: {fileID: 6086177604158619179, guid: 7e47b5994175c7a43956afef9db2dd88, type: 3}
   SystemSpawn: {fileID: 25593034930193633, guid: c543b4f6fc3dd4a238b314eb4ec0a242,
     type: 3}

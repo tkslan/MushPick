@@ -5,7 +5,7 @@ public class Moveable : MonoBehaviour
     [SerializeField] ValueReference SpeedValue;
 
     private SpriteRenderer sprite;
-    private Vector2 TargetPosition = Vector2.zero;
+    [HideInInspector]public Vector2 TargetPosition = Vector2.zero;
 
     public Vector2 GetRandomWorldPosition()
     {
@@ -39,8 +39,7 @@ public class Moveable : MonoBehaviour
     {
         var dir = TargetPosition - (Vector2)transform.position;
         var velocity = dir.normalized.magnitude * SpeedValue.FloatVariable;
-        transform.Translate(dir * velocity);
-
+        transform.position += (Vector3)dir * velocity;
         if (dir.magnitude < 0.1f) SetNewRandomTarget();
     }
 
