@@ -25,8 +25,8 @@ public partial class WorldController : MonoBehaviour
         for (int i = 0; i < spawnsCount; i++)
         {
             Transform spawn = Instantiate(SystemSpawn, transform);
-            entities[i].TargetPosition = GetRandomWorldPosition();
             transforms[i] = spawn;
+            entities[i].TargetPosition = GetRandomWorldPosition();
             entities[i].CurrentPosition = transforms[i].position;
             spawn.gameObject.GetComponent<SpriteRenderer>().color = RandomColor();
         }
@@ -57,16 +57,13 @@ public partial class WorldController : MonoBehaviour
     void SystemTick()
     {
         for (int i = 0; i < entities.Length - 1; i++)
-        {
             MoveEntity(i);
-        }
     }
 
     void MoveEntity(int i)
     {
-        var dir = entities[i].TargetPosition - entities[i].CurrentPosition;
-        var velocity = dir.normalized.magnitude * SystemSpeed.FloatVariable;
-        entities[i].CurrentPosition += dir * velocity;
+        Vector2 dir = entities[i].TargetPosition - entities[i].CurrentPosition;
+        entities[i].CurrentPosition += dir * SystemSpeed.FloatVariable;
         transforms[i].position = entities[i].CurrentPosition;
         if (dir.magnitude < 0.1f)
             entities[i].TargetPosition = GetRandomWorldPosition();
